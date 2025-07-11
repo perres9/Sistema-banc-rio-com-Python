@@ -1,0 +1,104 @@
+import time
+
+clientes = {}
+
+def esperar(texto, delay=1.2):
+    print(texto)
+    time.sleep(delay)
+
+def saudacao():
+    esperar("Olá! Seja muito bem-vindo ao seu banco virtual.")
+    esperar("Estou aqui para te ajudar com tudo que precisar no nosso banco.")
+
+def criar_cliente():
+    cpf = input("Informe seu CPF: ")
+    if cpf in clientes:
+        esperar("Você já tem uma conta conosco.")
+    else:
+        nome = input("Qual é seu nome? ")
+        clientes[cpf] = {
+            "nome": nome,
+            "saldo": 0.0,
+            "humor_bancario": "neutro",
+            "interacoes": 0
+        }
+        esperar(f"Conta criada com sucesso, {nome}!")
+
+def ver_saldo():
+    cpf = input("Digite seu CPF: ")
+    cliente = clientes.get(cpf)
+    if cliente:
+        nome = cliente["nome"]
+        saldo = cliente["saldo"]
+        esperar(f"{nome}, seu saldo atual é R${saldo:.2f}")
+        if saldo < 0:
+            cliente["humor_bancario"] = "triste"
+            esperar("Seu saldo está negativo. Se precisar de ajuda para organizar as finanças, estou por aqui.")
+        elif saldo > 10000:
+            cliente["humor_bancario"] = "feliz"
+            esperar("Saldo alto! Está guardando para algo especial? Parabéns!")
+    else:
+        esperar("Conta não encontrada.")
+
+def depositar():
+    cpf = input("Digite seu CPF: ")
+    cliente = clientes.get(cpf)
+    if cliente:
+        valor = float(input("Quanto deseja depositar? R$ "))
+        cliente["saldo"] += valor
+        cliente["interacoes"] += 1
+        esperar("Depósito realizado com sucesso.")
+        if valor > 5000:
+            esperar("Isso foi um ótimo depósito! Parabéns pela organização.")
+    else:
+        esperar("Conta não encontrada.")
+
+def sacar():
+    cpf = input("Digite seu CPF: ")
+    cliente = clientes.get(cpf)
+    if cliente:
+        valor = float(input("Quanto deseja sacar? R$ "))
+        if cliente["saldo"] >= valor:
+            cliente["saldo"] -= valor
+            cliente["interacoes"] += 1
+            esperar("Saque realizado. Aproveite com sabedoria.")
+            if cliente["saldo"] == 0:
+                esperar("Atenção: seu saldo agora está zerado.")
+        else:
+            esperar("Saldo insuficiente.")
+    else:
+        esperar("Conta não encontrada.")
+
+def encerrar():
+    esperar("Obrigado por usar nosso banco virtual.")
+    esperar("Lembre-se: o dinheiro deve trabalhar por você, e não o contrário.")
+    esperar("Até a próxima!")
+
+def menu():
+    saudacao()
+    while True:
+        print("\nMENU BANCÁRIO")
+        print("1 - Criar conta")
+        print("2 - Ver saldo")
+        print("3 - Depositar")
+        print("4 - Sacar")
+        print("5 - Sair")
+
+        escolha = input("Escolha uma opção: ")
+
+        if escolha == "1":
+            criar_cliente()
+        elif escolha == "2":
+            ver_saldo()
+        elif escolha == "3":
+            depositar()
+        elif escolha == "4":
+            sacar()
+        elif escolha == "5":
+            encerrar()
+            break
+        else:
+            esperar("Opção inválida. Tente novamente.")
+
+# Iniciar sistema
+menu()
